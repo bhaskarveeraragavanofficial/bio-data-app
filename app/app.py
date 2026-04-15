@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 def get_conn():
     return psycopg2.connect(
-        host="db",
+        host="localhost",
         database="biodata",
         user="user",
         password="password"

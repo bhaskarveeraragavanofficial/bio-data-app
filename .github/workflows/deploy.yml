@@ -1,0 +1,26 @@
+name: Deploy Local to EC2 
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy to EC2 via SSH
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_KEY }}
+        script: |
+           cd ~/bio-data-app
+           git pull origin main
+
+           docker stop biodataapp || true
+           docker rm biodataapp || true
+
+           docker build -t bio-data-app .
+           docker run -d -p 5010:5010 --name biodataapp bio-data-app
